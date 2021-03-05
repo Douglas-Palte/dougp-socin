@@ -49,7 +49,7 @@ public class APIGitHubService {
 					String name = readUser(login).path("name").asText();
 					String htmlUrl = readUser(login).path("html_url").asText();
 					users[idx] = new UserDTO(login, name, "", htmlUrl);
-					Thread.sleep((long) Math.ceil(5000f / 3600)); // Rate limiting GitHub.com
+					Thread.sleep(100); // Rate limiting GitHub.com
 				}
 				items = readUsers(page++);
 			} while (!items.isEmpty() && idx < users.length);
