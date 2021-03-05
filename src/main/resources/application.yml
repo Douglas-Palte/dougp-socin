@@ -1,0 +1,18 @@
+spring:
+    profiles:
+        active: local
+springdoc:
+    api-docs:
+        enabled: true
+        path: /api-docs
+    swagger-ui:
+        enabled: true
+        path: /swagger-ui-custom.html
+    version: 1.0.0
+
+server:
+    port: 8080
+    connection-timeout: 300000
+    servlet:
+        session:
+            timeout: 300000
