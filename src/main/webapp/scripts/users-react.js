@@ -314,7 +314,7 @@ class Model {
 				} else {
 					break;
 				}
-				await new Promise(r => setTimeout(r, 10 * 60 * 1000));
+				await new Promise(r => setTimeout(r, 1 * 60 * 1000));
 			} while (this.gitHubUsers.length < 500);
 		} catch (e) {
 			console.error('Model.gitHubUsers: ' + this.gitHubUsers.length + ': ' + e);

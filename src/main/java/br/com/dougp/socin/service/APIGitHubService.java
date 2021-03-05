@@ -73,6 +73,7 @@ public class APIGitHubService {
 	}
 
 	private String read(String url, int attempt) throws IOException, InterruptedException {
+		Thread.sleep((long) 1 * 60 * 1000); // 60 requests an hour (GitHub.com rate limiting)
 		StringBuilder buffer = new StringBuilder();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new URL(url).openStream()))) {
 			String line;
@@ -81,7 +82,6 @@ public class APIGitHubService {
 			}
 		} catch (IOException e) {
 			if (e.toString().indexOf("Server returned HTTP response code: 403 for URL:") != -1 && --attempt > 0) {
-				Thread.sleep((long) 10 * 60 * 1000); // Rate limiting GitHub.com
 				return read(url, attempt);
 			} else {
 				throw e;
