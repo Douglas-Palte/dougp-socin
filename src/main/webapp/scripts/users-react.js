@@ -63,7 +63,7 @@ const GitHubUser = (props) => {
 				<td style={{ 'padding-left': '20pt', 'text-align': 'right' }}>
 					{props.idx}
 				</td>
-				<td style={{ 'padding-left': '20pt' }}>
+				<td style={{ 'padding-left': '20pt', 'min-width': '60px', 'white-space': 'nowrap' }}>
 					{user.name}
 				</td>
 				<td style={{ 'padding-left': '20pt' }}>
