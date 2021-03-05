@@ -60,8 +60,8 @@ public class APIGitHubService {
 	}
 
 	private JsonNode readUsers(int page) throws IOException {
-		// followers:>65000 sort:followers-desc
-		String params = "q=followers%3A%3E3000%2520sort%3Afollowers-desc&per_page=100&page=" + page;
+		// followers:>3000 sort:followers-desc
+		String params = "q=followers%3A%3E3000%20sort%3Afollowers-desc&per_page=100&page=" + page;
 		String url = "https://api.github.com/search/users?" + params;
 		return new ObjectMapper().readTree(read(url)).get("items");
 	}
