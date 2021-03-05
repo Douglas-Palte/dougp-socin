@@ -40,14 +40,16 @@ const GitHubUsers = (props) => {
 	let [data, setData] = React.useState(model.gitHubUsers);
 	model.gitHubListener = setData;
 
-	const users = data.map((user) => {
-		return <GitHubUser key={user.login} user={user} />
+	const users = data.map((user, i) => {
+		return <GitHubUser key={user.login} user={user} idx={i + 1} />
 	})
 	return (
 		<React.Fragment>
 			<h2>{props.title}</h2>
 			<table>
-				{users}
+				<tbody style={{ 'display': 'block', 'height': '150px', 'overflow-y': 'auto', 'overflow-x': 'hidden' }}>
+					{users}
+				</tbody>
 			</table>
 		</React.Fragment>
 	)
@@ -58,10 +60,13 @@ const GitHubUser = (props) => {
 	return (
 		<React.Fragment>
 			<tr>
-				<td style={{ 'padding-left': '10pt' }}>
+				<td style={{ 'padding-left': '20pt', 'text-align': 'right' }}>
+					{props.idx}
+				</td>
+				<td style={{ 'padding-left': '20pt' }}>
 					{user.name}
 				</td>
-				<td style={{ 'padding-left': '10pt' }}>
+				<td style={{ 'padding-left': '20pt' }}>
 					<a href={user.htmlUrl} target="_blank">{user.login}</a>
 				</td>
 			</tr>
@@ -309,6 +314,7 @@ class Model {
 				} else {
 					break;
 				}
+				await new Promise(r => setTimeout(r, 2000));
 			} while (this.gitHubUsers.length < 500);
 		} catch (e) {
 			console.error('Model.gitHubUsers: ' + this.gitHubUsers.length + ': ' + e);

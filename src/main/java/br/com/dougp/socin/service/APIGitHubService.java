@@ -46,10 +46,10 @@ public class APIGitHubService {
 				for (Iterator<JsonNode> iterator = items.iterator(); iterator.hasNext() && idx < users.length; idx++) {
 					JsonNode next = iterator.next();
 					String login = next.path("login").asText();
-					String name = readUser(login).path("name").asText();
-					String htmlUrl = readUser(login).path("html_url").asText();
+					JsonNode userNode = readUser(login);
+					String name = userNode.path("name").asText();
+					String htmlUrl = userNode.path("html_url").asText();
 					users[idx] = new UserDTO(login, name, "", htmlUrl);
-					Thread.sleep(100); // Rate limiting GitHub.com
 				}
 				items = readUsers(page++);
 			} while (!items.isEmpty() && idx < users.length);
@@ -60,24 +60,31 @@ public class APIGitHubService {
 		}
 	}
 
-	private JsonNode readUsers(int page) throws IOException {
+	private JsonNode readUsers(int page) throws IOException, InterruptedException {
 		// followers:>3000 sort:followers-desc
-		String params = "q=followers%3A%3E3000%20sort%3Afollowers-desc&per_page=100&page=" + page;
+		String params = "q=followers%3A%3E3000%20sort%3Afollowers-desc&page=" + page;
 		String url = "https://api.github.com/search/users?" + params;
-		return new ObjectMapper().readTree(read(url)).get("items");
+		return new ObjectMapper().readTree(read(url, 10)).get("items");
 	}
 
-	private JsonNode readUser(String login) throws IOException {
+	private JsonNode readUser(String login) throws IOException, InterruptedException {
 		String url = "https://api.github.com/users/" + login;
-		return new ObjectMapper().readTree(read(url));
+		return new ObjectMapper().readTree(read(url, 10));
 	}
 
-	private String read(String url) throws IOException {
+	private String read(String url, int attempt) throws IOException, InterruptedException {
 		StringBuilder buffer = new StringBuilder();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(new URL(url).openStream()))) {
 			String line;
 			while ((line = br.readLine()) != null) {
 				buffer.append(line);
+			}
+		} catch (IOException e) {
+			if (e.toString().indexOf("Server returned HTTP response code: 403 for URL:") != -1 && --attempt > 0) {
+				Thread.sleep((long) 10 * 60 * 1000); // Rate limiting GitHub.com
+				return read(url, attempt);
+			} else {
+				throw e;
 			}
 		}
 		return buffer.toString();
