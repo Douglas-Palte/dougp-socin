@@ -4,9 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -63,7 +60,8 @@ public class APIGitHubService {
 	}
 
 	private JsonNode readUsers(int page) throws IOException {
-		String params = "q=" + URLEncoder.encode("followers:>65000 sort:followers-desc", Charset.defaultCharset()) + "&per_page=100&page=" + page;
+		// followers:>65000 sort:followers-desc
+		String params = "q=followers%3A%3E3000+sort%3Afollowers-desc&per_page=100&page=" + page;
 		String url = "https://api.github.com/search/users?" + params;
 		return new ObjectMapper().readTree(read(url)).get("items");
 	}
